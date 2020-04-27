@@ -1,3 +1,5 @@
+github.com/frk/compare v0.0.6 h1:iltAyhxsNb2lAl5666vr+mZGyIkVV0S/wx0qVlkNklM=
+github.com/frk/compare v0.0.6/go.mod h1:5bwv6/gZd3HD/UngMXbki5nvp6aJBTiWmXozSqE1uPc=
 github.com/frk/form v0.0.1 h1:0kZWd5ukNLpoq/osaITzY2FUrdWE3lJaNUvluOsrdPc=
 github.com/frk/form v0.0.1/go.mod h1:Swy6VDltjyHUbQO0MB5Xj0kHM8S2vgwTPvFua6OJnW8=
 github.com/frk/route v0.0.1 h1:42cHci7p0AR+bD6jW0qxAdhqzpdFJ0EOH2suOHTLFsE=
