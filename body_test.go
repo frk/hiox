@@ -51,11 +51,6 @@ func TestJSON_ReadBody(t *testing.T) {
 		body:  `{"foo":"test","bar":0.004,"baz":true}`,
 		input: &testBody{},
 		want:  &testBody{Foo: "test", Bar: 0.004, Baz: true},
-	}, {
-		name:  "should not decode if no Value was provided",
-		body:  `{"foo":"test","bar":0.004,"baz":true}`,
-		input: nil,
-		want:  nil,
 	}}
 
 	for _, tt := range tests {
@@ -74,8 +69,6 @@ func TestJSON_ReadBody(t *testing.T) {
 }
 
 func TestJSON_WriteBody(t *testing.T) {
-	const contentType = "application/json; charset=utf-8"
-
 	tests := []struct {
 		name   string
 		data   *testBody
@@ -84,16 +77,11 @@ func TestJSON_WriteBody(t *testing.T) {
 		header http.Header
 		err    error
 	}{{
-		name:   "write null",
-		code:   204,
-		want:   "null\n",
-		header: http.Header{"Content-Type": {contentType}},
-	}, {
 		name:   "write data",
 		code:   200,
 		data:   &testBody{Foo: "test", Bar: 0.004, Baz: true},
 		want:   `{"foo":"test","bar":0.004,"baz":true}` + "\n",
-		header: http.Header{"Content-Type": {contentType}},
+		header: http.Header{"Content-Type": {contentTypeJSON}},
 	}}
 
 	for _, tt := range tests {
@@ -144,11 +132,6 @@ func TestXML_ReadBody(t *testing.T) {
 		body:  `<data><foo>test</foo><bar>0.004</bar><baz>true</baz></data>`,
 		input: &testBody{},
 		want:  &testBody{XMLName: xml.Name{Local: "data"}, Foo: "test", Bar: 0.004, Baz: true},
-	}, {
-		name:  "should not decode xml body if no Value was provided",
-		body:  `<data><foo>test</foo><bar>0.004</bar><baz>true</baz></data>`,
-		input: nil,
-		want:  nil,
 	}}
 
 	for _, tt := range tests {
@@ -167,8 +150,6 @@ func TestXML_ReadBody(t *testing.T) {
 }
 
 func TestXML_WriteBody(t *testing.T) {
-	const contentType = "application/xml; charset=utf-8"
-
 	tests := []struct {
 		name   string
 		data   *testBody
@@ -177,16 +158,11 @@ func TestXML_WriteBody(t *testing.T) {
 		header http.Header
 		err    error
 	}{{
-		name:   "write empty string",
-		code:   204,
-		want:   "",
-		header: http.Header{"Content-Type": {contentType}},
-	}, {
 		name:   "write data",
 		code:   200,
 		data:   &testBody{Foo: "test", Bar: 0.004, Baz: true},
 		want:   `<data><foo>test</foo><bar>0.004</bar><baz>true</baz></data>`,
-		header: http.Header{"Content-Type": {contentType}},
+		header: http.Header{"Content-Type": {contentTypeXML}},
 	}}
 
 	for _, tt := range tests {
@@ -221,11 +197,6 @@ func TestForm_ReadBody(t *testing.T) {
 		want  interface{}
 		err   error
 	}{{
-		name: "ignore empty body",
-		body: ``,
-		// input: &testBody{},
-		// want: &testBody{},
-	}, {
 		name:  "should fail with incompatible types",
 		body:  badtypetext,
 		input: &testBody{},
@@ -236,11 +207,6 @@ func TestForm_ReadBody(t *testing.T) {
 		body:  `foo=test&bar=0.004&baz=true`,
 		input: &testBody{},
 		want:  &testBody{Foo: "test", Bar: 0.004, Baz: true},
-	}, {
-		name:  "should not decode form body if no dest input was set",
-		body:  `foo=test&bar=0.004&baz=true`,
-		input: nil,
-		want:  nil,
 	}}
 
 	for _, tt := range tests {
@@ -259,8 +225,6 @@ func TestForm_ReadBody(t *testing.T) {
 }
 
 func TestForm_WriteBody(t *testing.T) {
-	const contentType = "application/x-www-form-urlencoded; charset=utf-8"
-
 	tests := []struct {
 		name   string
 		data   *testBody
@@ -269,16 +233,11 @@ func TestForm_WriteBody(t *testing.T) {
 		header http.Header
 		err    error
 	}{{
-		name:   "fail with bad-value",
-		code:   204,
-		want:   "",
-		header: http.Header{"Content-Type": {contentType}},
-	}, {
 		name:   "write data",
 		code:   200,
 		data:   &testBody{Foo: "test", Bar: 0.004, Baz: true},
 		want:   `foo=test&bar=0.004&baz=true`,
-		header: http.Header{"Content-Type": {contentType}},
+		header: http.Header{"Content-Type": {contentTypeForm}},
 	}}
 
 	for _, tt := range tests {
@@ -300,4 +259,16 @@ func TestForm_WriteBody(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestHTML_WriteBody(t *testing.T) {
+	// TODO
+}
+
+func TestRedirect_WriteBody(t *testing.T) {
+	// TODO
+}
+
+func TestCSV_WriteBody(t *testing.T) {
+	// TODO
 }
