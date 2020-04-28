@@ -132,9 +132,9 @@ const contentTypeHTML = "text/html; charset=utf-8"
 // template with the specified Name, passing it the provided Data, and
 // then sending the result as the response's body.
 func (h HTML) WriteBody(w http.ResponseWriter, r *http.Request, code int) error {
-	w.Header().Set("Content-Type", contentTypeHTML)
-	w.WriteHeader(code)
 	if t, ok := templateMap[h.Name]; ok {
+		w.Header().Set("Content-Type", contentTypeHTML)
+		w.WriteHeader(code)
 		return t.Execute(w, h.Data)
 	}
 	return NoTemplateError{h.Name}
@@ -214,6 +214,14 @@ type CSVWriter struct {
 	// The file name to be used for the Content-Disposition header.
 	// SHOULD be set prior to the first call to WriteRow.
 	FileName string
+	// The HTTP status code to be sent with the response.
+	// SHOULD be set prior to the first call to WriteRow.
+	//
+	// Set by Open to 200 (Status OK) as default. If the embedding code needs
+	// to send a different value it should implement its own Open method, invoke
+	// the embedded Open method to set up the writer and *then* set the StatusCode
+	// field to the desired value.
+	StatusCode int
 
 	// The http.ResponseWriter target into which to the csv data will be written.
 	rw http.ResponseWriter
@@ -232,6 +240,7 @@ type CSVWriter struct {
 func (w *CSVWriter) Open(rw http.ResponseWriter) {
 	w.rw = rw
 	w.write = w.write1
+	w.StatusCode = http.StatusOK
 }
 
 // Flush flushes the underlying csv.Writer and returns and error if it fails.
@@ -256,6 +265,7 @@ const contentTypeCSV = "text/csv"
 func (w *CSVWriter) write1(row []string) error {
 	w.rw.Header().Set("Content-Disposition", "attachment; filename="+w.FileName)
 	w.rw.Header().Set("Content-Type", contentTypeCSV)
+	w.rw.WriteHeader(w.StatusCode)
 
 	w.csv = csv.NewWriter(w.rw)
 	if err := w.csv.Write(w.Header); err != nil {
