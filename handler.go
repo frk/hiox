@@ -6,7 +6,7 @@ import (
 )
 
 type HandlerInitializerFactory interface {
-	//
+	NewHandlerInitializer(v interface{}, path, method string) HandlerInitializer
 }
 
 // HandlerInitializer
@@ -23,13 +23,6 @@ type Handler interface {
 	Action
 	WriteResponse(w http.ResponseWriter, r *http.Request) error
 }
-
-type handler struct{ action }
-
-func (handler) AuthCheck(_ *http.Request, _ context.Context) error         { return nil }
-func (handler) ReadRequest(_ *http.Request, _ context.Context) error       { return nil }
-func (handler) InitResponse(_ http.ResponseWriter) error                   { return nil }
-func (handler) WriteResponse(_ http.ResponseWriter, _ *http.Request) error { return nil }
 
 // handlerExecer
 type handlerExecer struct {
@@ -62,3 +55,17 @@ func (x *handlerExecer) exec(h Handler, w http.ResponseWriter, r *http.Request, 
 
 	return h.WriteResponse(w, r)
 }
+
+// HandlerBase is a noop helper type that can be embedded by user defined
+// types that are intended to implement the Handler interface but do not
+// need to, nor want to, declare every single one of its methods.
+type HandlerBase struct{ handlerbase }
+
+// handlerbase is embedded by HandlerBase to artificially increase the depth level
+// of the noop methods to reduce the possibility of an "ambiguous selector" issue.
+type handlerbase struct{ actionbase }
+
+func (handlerbase) AuthCheck(_ *http.Request, _ context.Context) error         { return nil }
+func (handlerbase) ReadRequest(_ *http.Request, _ context.Context) error       { return nil }
+func (handlerbase) InitResponse(_ http.ResponseWriter) error                   { return nil }
+func (handlerbase) WriteResponse(_ http.ResponseWriter, _ *http.Request) error { return nil }
