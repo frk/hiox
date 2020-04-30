@@ -5,26 +5,52 @@ import (
 	"net/http"
 )
 
-type HandlerInitializerFactory interface {
-	NewHandlerInitializer(v interface{}, path, method string) HandlerInitializer
+// HandlerInitializerAdapter
+type HandlerInitializerAdapter interface {
+	AdaptHandlerInitializer(hi interface{}, path, method string) HandlerInitializer
 }
 
-// HandlerInitializer
+// HandlerInitializer is an interface used for initializing new, request
+// specific, instances of the Handler interface.
 type HandlerInitializer interface {
-	// Init
+	// Init returns a Handler instance (in general a new one).
+	//
+	// Init will be invoked once for every incoming request and the returned
+	// Handler will be used to handle that request. As long as Init is implemented
+	// to return a new Handler instance everytime it's invoked it is guaranteed
+	// that each request will be handled by their own Handler instance.
 	Init() Handler
 }
 
-// Handler
+// Handler wraps a set of methods that are executed in sequence to handle an
+// incoming HTTP request. Each of the Handler's methods is intended to implement
+// a subset of the work that the Handler needs to do to handle the request.
+// The kind of the work that a method should perform is indicated by the method's
+// name, however this is nonbinding and it is left to the developer's judgement
+// to decide which method should do what subset of the Handler's work.
+//
+// If, during execution, any of the Handler's methods returns an error the execution
+// will stop and return that error, leaving all of the subsequent methods uninvoked.
 type Handler interface {
+	// Authenticate and authorize the incoming request.
 	AuthCheck(r *http.Request, c context.Context) error
+	// Read the input from the incoming request (headers, url, query, body).
 	ReadRequest(r *http.Request, c context.Context) error
+	// Prepare the response. In the general case this is unnecessary and
+	// most handlers do not need to do anything in this method.
+	//
+	// However this method becomes useful when one needs to stream data,
+	// more specifically it allows the Handler to setup the writer as the
+	// destination for the data and then, piece by piece, the Handler can
+	// send the data to the writer as it is being retrieved.
 	InitResponse(w http.ResponseWriter) error
+	// The meat of the Handler.
 	Action
+	// Write the output to the response (headers, body).
 	WriteResponse(w http.ResponseWriter, r *http.Request) error
 }
 
-// handlerExecer
+// handlerExecer manages the execution of a handler.
 type handlerExecer struct {
 	init HandlerInitializer
 }
@@ -65,7 +91,14 @@ type HandlerBase struct{ handlerbase }
 // of the noop methods to reduce the possibility of an "ambiguous selector" issue.
 type handlerbase struct{ actionbase }
 
-func (handlerbase) AuthCheck(_ *http.Request, _ context.Context) error         { return nil }
-func (handlerbase) ReadRequest(_ *http.Request, _ context.Context) error       { return nil }
-func (handlerbase) InitResponse(_ http.ResponseWriter) error                   { return nil }
+// This method is a no-op.
+func (handlerbase) AuthCheck(_ *http.Request, _ context.Context) error { return nil }
+
+// This method is a no-op.
+func (handlerbase) ReadRequest(_ *http.Request, _ context.Context) error { return nil }
+
+// This method is a no-op.
+func (handlerbase) InitResponse(_ http.ResponseWriter) error { return nil }
+
+// This method is a no-op.
 func (handlerbase) WriteResponse(_ http.ResponseWriter, _ *http.Request) error { return nil }

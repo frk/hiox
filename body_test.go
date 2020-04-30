@@ -3,6 +3,7 @@ package hxio
 import (
 	"encoding/json"
 	"encoding/xml"
+	"fmt"
 	"html/template"
 	"io"
 	"net/http"
@@ -13,6 +14,59 @@ import (
 	"github.com/frk/compare"
 	"github.com/frk/form"
 )
+
+func TestRequestDump_ReadBody(t *testing.T) {
+	//plaintext := `plaintext`
+	//syntaxError := json.Unmarshal([]byte(plaintext), &testBody{})
+
+	tests := []struct {
+		name   string
+		url    string
+		method string
+		body   string
+		dump   RequestDump
+		want   []byte
+		err    error
+	}{{
+		name:   "get without body",
+		url:    "https://testing.com",
+		method: "GET",
+		dump:   RequestDump{&[]byte{}, false},
+		want:   []byte("GET / HTTP/1.1\r\nHost: testing.com\r\n\r\n"),
+	}, {
+		name:   "post without body",
+		url:    "https://testing.com/a/b/c",
+		method: "POST",
+		body:   `{"foo":"bar"}`,
+		dump:   RequestDump{&[]byte{}, false},
+		want:   []byte("POST /a/b/c HTTP/1.1\r\nHost: testing.com\r\n\r\n"),
+	}, {
+		name:   "post with body",
+		url:    "https://testing.com/a/b/c",
+		method: "POST",
+		body:   `{"foo":"bar"}`,
+		dump:   RequestDump{&[]byte{}, true},
+		want:   []byte("POST /a/b/c HTTP/1.1\r\nHost: testing.com\r\n\r\n{\"foo\":\"bar\"}"),
+	}}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			r, err := http.NewRequest(tt.method, tt.url, strings.NewReader(tt.body))
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			err = tt.dump.ReadBody(r)
+			if e := compare.Compare(err, tt.err); e != nil {
+				t.Error(e)
+			}
+			if e := compare.Compare(string(*tt.dump.Val), string(tt.want)); e != nil {
+				fmt.Printf("%q\n", *tt.dump.Val)
+				t.Error(e)
+			}
+		})
+	}
+}
 
 type strReadCloser struct{ *strings.Reader }
 

@@ -6,10 +6,30 @@ import (
 	"encoding/xml"
 	"html/template"
 	"net/http"
+	"net/http/httputil"
 	"sync"
 
 	"github.com/frk/form"
 )
+
+// The RequestDump type implements the BodyReader interface.
+type RequestDump struct {
+	// The pointer to which to set the request dump.
+	Val *[]byte
+	// Indicates whether to dump the request's body as well.
+	Body bool
+}
+
+// ReadBody implements the BodyReader interface by dumping the request's
+// payload and setting the reciever's Val pointer to the result.
+func (d RequestDump) ReadBody(r *http.Request) error {
+	dump, err := httputil.DumpRequest(r, d.Body)
+	if err != nil {
+		return ReadError{err}
+	}
+	*d.Val = dump
+	return nil
+}
 
 // The JSON type implements both the BodyWriter and the BodyReader interfaces.
 type JSON struct {

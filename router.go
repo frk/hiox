@@ -12,7 +12,7 @@ type ErrorHandler interface {
 }
 
 type RouteOptions struct {
-	HandlerInitializerFactory HandlerInitializerFactory
+	HandlerInitializerAdapter HandlerInitializerAdapter
 	ErrorHandler              ErrorHandler
 	PathPrefix                string
 }
@@ -24,8 +24,8 @@ type RouteList []struct {
 }
 
 func InitRouter(r *route.Router, routes RouteList, opts RouteOptions) {
-	if opts.HandlerInitializerFactory == nil {
-		opts.HandlerInitializerFactory = handlerInitializerFactory{}
+	if opts.HandlerInitializerAdapter == nil {
+		opts.HandlerInitializerAdapter = handlerInitializerAdapter{}
 	}
 	if opts.ErrorHandler == nil {
 		opts.ErrorHandler = errorHandler{}
@@ -36,7 +36,7 @@ func InitRouter(r *route.Router, routes RouteList, opts RouteOptions) {
 		method := rt.Method
 
 		handler := new(routeHandler)
-		handler.init = opts.HandlerInitializerFactory.NewHandlerInitializer(rt.Handler, path, method)
+		handler.init = opts.HandlerInitializerAdapter.AdaptHandlerInitializer(rt.Handler, path, method)
 		handler.eh = opts.ErrorHandler
 
 		r.Handle(method, path, handler)
@@ -55,8 +55,8 @@ func (h *routeHandler) ServeHTTP(ctx context.Context, w http.ResponseWriter, r *
 }
 
 func InitServeMux(m *http.ServeMux, routes RouteList, opts RouteOptions) {
-	if opts.HandlerInitializerFactory == nil {
-		opts.HandlerInitializerFactory = handlerInitializerFactory{}
+	if opts.HandlerInitializerAdapter == nil {
+		opts.HandlerInitializerAdapter = handlerInitializerAdapter{}
 	}
 	if opts.ErrorHandler == nil {
 		opts.ErrorHandler = errorHandler{}
@@ -82,7 +82,7 @@ func InitServeMux(m *http.ServeMux, routes RouteList, opts RouteOptions) {
 		}
 
 		handler := new(httpHandler)
-		handler.init = opts.HandlerInitializerFactory.NewHandlerInitializer(rt.Handler, path, method)
+		handler.init = opts.HandlerInitializerAdapter.AdaptHandlerInitializer(rt.Handler, path, method)
 		handler.eh = opts.ErrorHandler
 
 		mux.Handle(path, handler)
@@ -106,8 +106,8 @@ func (errorHandler) HandleError(w http.ResponseWriter, r *http.Request, err erro
 	http.Error(w, err.Error(), http.StatusBadRequest)
 }
 
-type handlerInitializerFactory struct{}
+type handlerInitializerAdapter struct{}
 
-func (handlerInitializerFactory) NewHandlerInitializer(v interface{}, path, method string) HandlerInitializer {
+func (handlerInitializerAdapter) AdaptHandlerInitializer(v interface{}, path, method string) HandlerInitializer {
 	return v.(HandlerInitializer)
 }

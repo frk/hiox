@@ -1,14 +1,11 @@
 package hxio
 
 // Action wraps a set of methods that are executed in sequence to accomplish
-// the Action's objective. Each of the Action's methods is intended to represent
-// a single task with responsibilities separate from, although related to, those
-// of the other tasks.
-//
-// The names of the methods should serve as a guide to what the intended responsibility
-// for each method is, however not every task will fit neatly into any of those methods
-// and therefore, in such a case, it is left to the developer's judgement to decide
-// which method should implement such a task.
+// the Action's objective. Each of the Action's methods is intended to implement
+// a subset of the work that the Action needs to do to accomplish the objective.
+// The kind of the work that a method should perform is indicated by the method's
+// name, however this is nonbinding and it is left to the developer's judgement
+// to decide which method should do what subset of the Action's work.
 //
 // If, during execution, any of the Action's methods returns an error the execution
 // will skip over to, and invoke, the Done method passing it the error value and
@@ -33,8 +30,7 @@ type Action interface {
 	Done(in error) (out error)
 }
 
-// ExecuteAction executes the given Action returning the error returned from
-// the Action's Done method, if any.
+// ExecuteAction executes the given Action returning the error that the Action's Done method returned, if any.
 func ExecuteAction(a Action) error {
 	if err := execAction(a); err != nil && err != IsDone {
 		return a.Done(err)
@@ -70,10 +66,23 @@ type ActionBase struct{ actionbase }
 // of the noop methods to reduce the possibility of an "ambiguous selector" issue.
 type actionbase struct{}
 
+// This method is a no-op.
 func (actionbase) BeforeValidate() error { return nil }
-func (actionbase) Validate() error       { return nil }
-func (actionbase) AfterValidate() error  { return nil }
-func (actionbase) BeforeExecute() error  { return nil }
-func (actionbase) Execute() error        { return nil }
-func (actionbase) AfterExecute() error   { return nil }
-func (actionbase) Done(err error) error  { return err }
+
+// This method is a no-op.
+func (actionbase) Validate() error { return nil }
+
+// This method is a no-op.
+func (actionbase) AfterValidate() error { return nil }
+
+// This method is a no-op.
+func (actionbase) BeforeExecute() error { return nil }
+
+// This method is a no-op.
+func (actionbase) Execute() error { return nil }
+
+// This method is a no-op.
+func (actionbase) AfterExecute() error { return nil }
+
+// This method is a no-op.
+func (actionbase) Done(err error) error { return err }
