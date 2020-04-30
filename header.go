@@ -5,9 +5,9 @@ import (
 	"regexp"
 )
 
-type CookieValue map[string]*string
+type CookieValues map[string]*string
 
-func (rr CookieValue) ReadHeader(header http.Header) error {
+func (rr CookieValues) ReadHeader(header http.Header) error {
 	cc := (&http.Request{Header: header}).Cookies()
 	if len(cc) == 0 {
 		return nil
@@ -62,11 +62,11 @@ func (rr BearerToken) ReadHeader(header http.Header) error {
 	return nil
 }
 
-type Cookie struct {
+type SetCookie struct {
 	Val *http.Cookie
 }
 
-func (rr Cookie) WriteHeader(header http.Header) {
+func (rr SetCookie) WriteHeader(header http.Header) {
 	if v := rr.Val.String(); v != "" {
 		header.Add("Set-Cookie", v)
 	}

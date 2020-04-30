@@ -36,9 +36,7 @@ func (rw *ResponseWriter) WriteResponse(w http.ResponseWriter, r *http.Request) 
 			return rw.Body.WriteBody(w, r, rw.Status)
 		}
 		return rw.Body.WriteBody(w, r, http.StatusOK) // default to 200
-	}
-
-	if rw.Status > 0 {
+	} else if rw.Status > 0 {
 		w.WriteHeader(rw.Status)
 	}
 	return nil
