@@ -1,4 +1,4 @@
-package hxio
+package hiox
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 )
 
 // HandlerInitializerAdapter converts a custom, user-defined, handler initializer
-// interface into the hxio.HandlerInitializer interface and returns it.
+// interface into the hiox.HandlerInitializer interface and returns it.
 type HandlerInitializerAdapter interface {
 	AdaptHandlerInitializer(hi interface{}, path, method string) HandlerInitializer
 }
@@ -29,7 +29,7 @@ type ErrorHandler interface {
 // to each route being registered.
 type RouteOptions struct {
 	// The HandlerInitializerAdapter to be used to convert the custom
-	// route Handler value into an hxio.Handler.
+	// route Handler value into an hiox.Handler.
 	HandlerInitializerAdapter HandlerInitializerAdapter
 	// The ErrorHandler to be used to handle errors returned
 	// from the route Handlers.

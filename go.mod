@@ -1,4 +1,4 @@
-module github.com/frk/hxio
+module github.com/frk/hiox
 
 go 1.14
 

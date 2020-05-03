@@ -1,4 +1,4 @@
-package hxio
+package hiox
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ var IsDone done
 type done struct{}
 
 // implements the error interface.
-func (done) Error() string { return `hxio:sigdone` }
+func (done) Error() string { return `hiox:sigdone` }
 
 // WriteError represents an error returned by a BodyWriter.
 type WriteError struct {
@@ -41,5 +41,5 @@ type NoTemplateError struct {
 }
 
 func (e NoTemplateError) Error() string {
-	return fmt.Sprintf("hxio: template %q not found", e.Name)
+	return fmt.Sprintf("hiox: template %q not found", e.Name)
 }

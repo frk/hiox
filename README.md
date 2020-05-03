@@ -1,7 +1,6 @@
-## hxio
+## hiox
 
-**h**andler e**x**ecution and **i**nput/**o**utput support
-work in progress
+**h**andler **i**nput/**o**utput and e**x**ecution support
 
 ---
 

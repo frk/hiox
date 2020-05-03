@@ -1,4 +1,4 @@
-package hxio
+package hiox
 
 import (
 	"context"
