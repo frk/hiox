@@ -3,9 +3,9 @@ package hiox
 // Action wraps a set of methods that are executed in sequence to accomplish
 // the Action's objective. Each of the Action's methods is intended to implement
 // a subset of the work that the Action needs to do to accomplish the objective.
-// The kind of the work that a method should perform is indicated by the method's
-// name, however this is nonbinding and it is left to the developer's judgement
-// to decide which method should do what subset of the Action's work.
+// The kind of work that a method should perform is indicated by the method's name,
+// however this is nonbinding and it is left to the developer's judgement to decide
+// which method should do what subset of the Action's work.
 //
 // If, during execution, any of the Action's methods returns an error the execution
 // will skip over to, and invoke, the Done method passing it the error value and

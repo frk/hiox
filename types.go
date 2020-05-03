@@ -8,6 +8,45 @@ import (
 	"github.com/frk/route"
 )
 
+// PathReaderList can be used to read the path parameters of different types.
+type PathReaderList []PathReader
+
+// ReadPath implements the PathReader interface.
+func (list PathReaderList) ReadPath(params route.Params) error {
+	for _, rr := range list {
+		if err := rr.ReadPath(params); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// QueryReaderList can be used to read the url query parameters of different types.
+type QueryReaderList []QueryReader
+
+// ReadQuery implements the QueryReader interface.
+func (list QueryReaderList) ReadQuery(query url.Values) error {
+	for _, rr := range list {
+		if err := rr.ReadQuery(query); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// HeaderReaderList can be used to read the HTTP headers of different types.
+type HeaderReaderList []HeaderReader
+
+// ReadHeader implements the HeaderReader interface.
+func (list HeaderReaderList) ReadHeader(header http.Header) error {
+	for _, rr := range list {
+		if err := rr.ReadHeader(header); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // Bool is a map that can be used to read the values, using the map's keys,
 // from an incoming request's header, path or query parameters and indirectly
 // set them to the bools pointed to by the map's values.

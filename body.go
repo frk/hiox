@@ -133,6 +133,28 @@ func (f Form) WriteBody(w http.ResponseWriter, r *http.Request, statusCode int) 
 	return nil
 }
 
+// The Text type implements the BodyWriter interface.
+type Text struct {
+	// The value to be sent in an HTTP response body.
+	Val string
+}
+
+// WriteInit is a noop, required only to satisfy the BodyWriter interface.
+func (Text) WriteInit(_ http.ResponseWriter) error {
+	return nil
+}
+
+const contentTypeText = "text/plain"
+
+// WriteBody implements the BodyWriter interface by writing the Val field's
+// contents to the response's body.
+func (t Text) WriteBody(w http.ResponseWriter, r *http.Request, code int) error {
+	w.Header().Set("Content-Type", contentTypeText)
+	w.WriteHeader(code)
+	_, err := w.Write([]byte(t.Val))
+	return err
+}
+
 // The HTML type implements the BodyWriter interface.
 type HTML struct {
 	// The name (map key) of the template as registered with RegisterTemplates.

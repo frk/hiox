@@ -316,6 +316,43 @@ func TestForm_WriteBody(t *testing.T) {
 	}
 }
 
+func TestText_WriteBody(t *testing.T) {
+	tests := []struct {
+		name   string
+		text   Text
+		code   int
+		want   string
+		header http.Header
+		err    error
+	}{{
+		name:   "write text",
+		text:   Text{"hello world"},
+		code:   200,
+		want:   `hello world`,
+		header: http.Header{"Content-Type": {contentTypeText}},
+	}}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			w := httptest.NewRecorder()
+
+			err := tt.text.WriteBody(w, nil, tt.code)
+			if e := compare.Compare(err, tt.err); e != nil {
+				t.Error(e, err)
+			}
+			if e := compare.Compare(w.Code, tt.code); e != nil {
+				t.Error(e)
+			}
+			if e := compare.Compare(w.Body.String(), tt.want); e != nil {
+				t.Error(e)
+			}
+			if e := compare.Compare(w.Result().Header, tt.header); e != nil {
+				t.Error(e)
+			}
+		})
+	}
+}
+
 func TestHTML_WriteBody(t *testing.T) {
 	t1 := template.Must(template.New("t").Parse(`<html><body>{{ . }}</body></html>`))
 	t2 := template.Must(template.New("t").Parse(`<html><body style="background-color:{{ . }}">foo</body></html>`))

@@ -6,7 +6,7 @@ import (
 )
 
 // HandlerInitializer is an interface used for initializing new, request
-// specific, instances of the Handler interface.
+// scoped, instances of the Handler interface.
 type HandlerInitializer interface {
 	// Init returns a Handler instance (in general a new one).
 	//

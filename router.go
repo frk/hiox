@@ -8,7 +8,7 @@ import (
 )
 
 // HandlerInitializerAdapter converts a custom, user-defined, handler initializer
-// interface into the hiox.HandlerInitializer interface and returns it.
+// into a value that implements the hiox.HandlerInitializer interface.
 type HandlerInitializerAdapter interface {
 	AdaptHandlerInitializer(hi interface{}, path, method string) HandlerInitializer
 }
