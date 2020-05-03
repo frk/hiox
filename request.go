@@ -8,29 +8,42 @@ import (
 	"github.com/frk/route"
 )
 
+// HeaderReader interface can be implemented to read an incoming request's header.
 type HeaderReader interface {
 	ReadHeader(header http.Header) error
 }
 
+// QueryReader interface can be implemented to read the query parameters
+// from an incoming request's url.
 type QueryReader interface {
 	ReadQuery(query url.Values) error
 }
 
+// PathReader interface can be implemented to read the route.Params from an
+// incoming request's url path.
 type PathReader interface {
 	ReadPath(params route.Params) error
 }
 
+// BodyReader interface can be implemented to read the body of an incoming request.
 type BodyReader interface {
 	ReadBody(r *http.Request) error
 }
 
+// RequestReader is intended to be embedded as part of a Handler implementation
+// to read the various data from the incoming HTTP request.
 type RequestReader struct {
+	// If set, will read the header from the incoming request.
 	Header HeaderReader
-	Query  QueryReader
-	Path   PathReader
-	Body   BodyReader
+	// If set, will read the query parameters from the incoming request's url.
+	Query QueryReader
+	// If set, will read the route.Params from the path of incoming request's url.
+	Path PathReader
+	// If set, will read the body from the incoming request.
+	Body BodyReader
 }
 
+// RequestReader implements the ReadRequest method of the Handler interface.
 func (rr *RequestReader) ReadRequest(r *http.Request, c context.Context) error {
 	if rr.Header != nil {
 		header := r.Header

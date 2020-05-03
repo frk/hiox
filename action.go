@@ -32,29 +32,29 @@ type Action interface {
 
 // ExecuteAction executes the given Action returning the error that the Action's Done method returned, if any.
 func ExecuteAction(a Action) error {
-	if err := execAction(a); err != nil && err != IsDone {
+	exec := func(a Action) error {
+		if err := a.BeforeValidate(); err != nil {
+			return err
+		}
+		if err := a.Validate(); err != nil {
+			return err
+		}
+		if err := a.AfterValidate(); err != nil {
+			return err
+		}
+		if err := a.BeforeExecute(); err != nil {
+			return err
+		}
+		if err := a.Execute(); err != nil {
+			return err
+		}
+		return a.AfterExecute()
+	}
+
+	if err := exec(a); err != nil && err != IsDone {
 		return a.Done(err)
 	}
 	return a.Done(nil)
-}
-
-func execAction(a Action) error {
-	if err := a.BeforeValidate(); err != nil {
-		return err
-	}
-	if err := a.Validate(); err != nil {
-		return err
-	}
-	if err := a.AfterValidate(); err != nil {
-		return err
-	}
-	if err := a.BeforeExecute(); err != nil {
-		return err
-	}
-	if err := a.Execute(); err != nil {
-		return err
-	}
-	return a.AfterExecute()
 }
 
 // ActionBase is a noop helper type that can be embedded by user defined

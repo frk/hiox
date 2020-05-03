@@ -5,11 +5,6 @@ import (
 	"net/http"
 )
 
-// HandlerInitializerAdapter
-type HandlerInitializerAdapter interface {
-	AdaptHandlerInitializer(hi interface{}, path, method string) HandlerInitializer
-}
-
 // HandlerInitializer is an interface used for initializing new, request
 // specific, instances of the Handler interface.
 type HandlerInitializer interface {
@@ -55,16 +50,11 @@ type handlerExecer struct {
 	init HandlerInitializer
 }
 
-// serve initializes and executes the handler.
+// serve initializes and executes the handler. The handler's methods are invoked
+// in the pre-defined order, if any of the methods return an error serve will exit
+// immediately and return that error, leaving the rest of the handler's methods untouched.
 func (x *handlerExecer) serve(w http.ResponseWriter, r *http.Request, c context.Context) error {
 	h := x.init.Init()
-	return x.exec(h, w, r, c)
-}
-
-// exec invokes the given handler's methods in the pre-defined order, if any of
-// the methods return an error exec will exit immediately and return that error,
-// leaving the rest of the handler's methods untouched.
-func (x *handlerExecer) exec(h Handler, w http.ResponseWriter, r *http.Request, c context.Context) error {
 	if err := h.AuthCheck(r, c); err != nil {
 		return err
 	}
