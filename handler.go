@@ -72,23 +72,23 @@ func (x *handlerExecer) serve(w http.ResponseWriter, r *http.Request, c context.
 	return h.WriteResponse(w, r)
 }
 
-// HandlerBase is a noop helper type that can be embedded by user defined
+// NopHandler is a noop helper type that can be embedded by user defined
 // types that are intended to implement the Handler interface but do not
 // need to, nor want to, declare every single one of its methods.
-type HandlerBase struct{ handlerbase }
+type NopHandler struct{ nophandler }
 
-// handlerbase is embedded by HandlerBase to artificially increase the depth level
+// nophandler is embedded by NopHandler to artificially increase the depth level
 // of the noop methods to reduce the possibility of an "ambiguous selector" issue.
-type handlerbase struct{ actionbase }
+type nophandler struct{ nopaction }
 
 // This method is a no-op.
-func (handlerbase) AuthCheck(_ *http.Request, _ context.Context) error { return nil }
+func (nophandler) AuthCheck(_ *http.Request, _ context.Context) error { return nil }
 
 // This method is a no-op.
-func (handlerbase) ReadRequest(_ *http.Request, _ context.Context) error { return nil }
+func (nophandler) ReadRequest(_ *http.Request, _ context.Context) error { return nil }
 
 // This method is a no-op.
-func (handlerbase) InitResponse(_ http.ResponseWriter) error { return nil }
+func (nophandler) InitResponse(_ http.ResponseWriter) error { return nil }
 
 // This method is a no-op.
-func (handlerbase) WriteResponse(_ http.ResponseWriter, _ *http.Request) error { return nil }
+func (nophandler) WriteResponse(_ http.ResponseWriter, _ *http.Request) error { return nil }

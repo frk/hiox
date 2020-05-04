@@ -57,32 +57,32 @@ func ExecuteAction(a Action) error {
 	return a.Done(nil)
 }
 
-// ActionBase is a noop helper type that can be embedded by user defined
+// NopAction is a noop helper type that can be embedded by user defined
 // types that are intended to implement the Action interface but do not
 // need to, nor want to, declare every single one of its methods.
-type ActionBase struct{ actionbase }
+type NopAction struct{ nopaction }
 
-// actionbase is embedded by ActionBase to artificially increase the depth level
+// nopaction is embedded by NopAction to artificially increase the depth level
 // of the noop methods to reduce the possibility of an "ambiguous selector" issue.
-type actionbase struct{}
+type nopaction struct{}
 
 // This method is a no-op.
-func (actionbase) BeforeValidate() error { return nil }
+func (nopaction) BeforeValidate() error { return nil }
 
 // This method is a no-op.
-func (actionbase) Validate() error { return nil }
+func (nopaction) Validate() error { return nil }
 
 // This method is a no-op.
-func (actionbase) AfterValidate() error { return nil }
+func (nopaction) AfterValidate() error { return nil }
 
 // This method is a no-op.
-func (actionbase) BeforeExecute() error { return nil }
+func (nopaction) BeforeExecute() error { return nil }
 
 // This method is a no-op.
-func (actionbase) Execute() error { return nil }
+func (nopaction) Execute() error { return nil }
 
 // This method is a no-op.
-func (actionbase) AfterExecute() error { return nil }
+func (nopaction) AfterExecute() error { return nil }
 
 // This method is a no-op.
-func (actionbase) Done(err error) error { return err }
+func (nopaction) Done(err error) error { return err }
