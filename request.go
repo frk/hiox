@@ -41,10 +41,15 @@ type RequestReader struct {
 	Path PathReader
 	// If set, will read the body from the incoming request.
 	Body BodyReader
+
+	// the original request, set by ReadRequest
+	r *http.Request
 }
 
 // RequestReader implements the ReadRequest method of the Handler interface.
 func (rr *RequestReader) ReadRequest(r *http.Request, c context.Context) error {
+	rr.r = r
+
 	if rr.Header != nil {
 		header := r.Header
 		if err := rr.Header.ReadHeader(header); err != nil {
@@ -71,4 +76,14 @@ func (rr *RequestReader) ReadRequest(r *http.Request, c context.Context) error {
 	}
 
 	return nil
+}
+
+// GetContext returns the underlying http request's context value.
+func (rr *RequestReader) GetContext() context.Context {
+	return rr.r.Context()
+}
+
+// GetRequest returns the underlying http request.
+func (rr *RequestReader) GetRequest() *http.Request {
+	return rr.r
 }
