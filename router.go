@@ -1,4 +1,4 @@
-package hiox
+package httpcrud
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 )
 
 // HandlerInitializerAdapter converts a custom, user-defined, handler initializer
-// into a value that implements the hiox.HandlerInitializer interface.
+// into a value that implements the httpcrud.HandlerInitializer interface.
 type HandlerInitializerAdapter interface {
 	AdaptHandlerInitializer(hi interface{}, path, method string) HandlerInitializer
 }
@@ -29,7 +29,7 @@ type ErrorHandler interface {
 // to each route being registered.
 type RouteOptions struct {
 	// The HandlerInitializerAdapter to be used to convert the custom
-	// route Handler value into an hiox.Handler.
+	// route Handler value into an httpcrud.Handler.
 	HandlerInitializerAdapter HandlerInitializerAdapter
 	// The ErrorHandler to be used to handle errors returned
 	// from the route Handlers.

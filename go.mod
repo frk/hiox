@@ -1,4 +1,4 @@
-module github.com/frk/hiox
+module github.com/frk/httpcrud
 
 go 1.14
 

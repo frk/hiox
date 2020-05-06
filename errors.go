@@ -1,4 +1,4 @@
-package hiox
+package httpcrud
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ var IsDone done
 type done struct{}
 
 // implements the error interface.
-func (done) Error() string { return `hiox:sigdone` }
+func (done) Error() string { return `httpcrud:sigdone` }
 
 // WriteError represents an error returned by a BodyWriter.
 type WriteError struct {
@@ -41,5 +41,5 @@ type NoTemplateError struct {
 }
 
 func (e NoTemplateError) Error() string {
-	return fmt.Sprintf("hiox: template %q not found", e.Name)
+	return fmt.Sprintf("httpcrud: template %q not found", e.Name)
 }
