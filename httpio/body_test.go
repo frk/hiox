@@ -1,4 +1,4 @@
-package httpcrud
+package httpio
 
 import (
 	"encoding/json"

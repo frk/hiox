@@ -1,18 +1,8 @@
-package httpcrud
+package httpio
 
 import (
 	"fmt"
 )
-
-// The IsDone "signal" can be returned by any Action method to indicate that
-// the execution should skip to, and invoke, the Action's Done method without
-// calling any of its other methods in-between.
-var IsDone done
-
-type done struct{}
-
-// implements the error interface.
-func (done) Error() string { return `httpcrud:sigdone` }
 
 // WriteError represents an error returned by a BodyWriter.
 type WriteError struct {
@@ -41,5 +31,5 @@ type NoTemplateError struct {
 }
 
 func (e NoTemplateError) Error() string {
-	return fmt.Sprintf("httpcrud: template %q not found", e.Name)
+	return fmt.Sprintf("httpcrud/httpio: template %q not found", e.Name)
 }
