@@ -78,12 +78,12 @@ func (rr *RequestReader) ReadRequest(r *http.Request, c context.Context) error {
 	return nil
 }
 
-// GetContext returns the underlying http request's context value.
+// GetContext is a convenience method that returns the underlying http request's context value.
 func (rr *RequestReader) GetContext() context.Context {
 	return rr.r.Context()
 }
 
-// GetRequest returns the underlying http request.
+// GetRequest is a convenience method that returns the underlying http request.
 func (rr *RequestReader) GetRequest() *http.Request {
 	return rr.r
 }

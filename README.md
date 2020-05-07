@@ -1,6 +1,3 @@
-### (work in progress)
---------------------
-
 # httpcrud
 
 An idiosyncratic approach to writing HTTP handlers in Go, partly inspired

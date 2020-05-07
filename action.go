@@ -87,9 +87,10 @@ func (nopaction) AfterExecute() error { return nil }
 // This method is a no-op.
 func (nopaction) Done(err error) error { return err }
 
-// The IsDone "signal" can be returned by any Action method to indicate that
-// the execution should skip to, and invoke, the Action's Done method without
-// calling any of its other methods in-between.
+// The IsDone value acts as a "signal" for the ExecuteAction function. By implementing
+// the error interface IsDone can be returned by an Action's method to indicate that
+// the execution should skip to, and invoke, the Action's Done method without calling
+// any of the Action's remaining methods.
 var IsDone done
 
 type done struct{}
