@@ -3,8 +3,6 @@
 The `httpcrud` package defines a number of interfaces and types that provide
 an alternative, idiosyncratic approach to writing HTTP handlers in Go.
 
----------
-
 What the package tries to achieve is to make it *easier* to adhere to SRP without
 having to introduce a large number of disjointed units that, while easy to comprehend
 individually, in combination are difficult to reason about. This can become increasingly
