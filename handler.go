@@ -6,7 +6,7 @@ import (
 )
 
 // HandlerInitializer is an interface used for initializing new, request
-// scoped, instances of the Handler interface.
+// specific, instances of the Handler interface.
 type HandlerInitializer interface {
 	// Init returns a Handler instance (in general a new one).
 	//
@@ -14,7 +14,28 @@ type HandlerInitializer interface {
 	// Handler will be used to handle that request. As long as Init is implemented
 	// to return a new Handler instance everytime it's invoked it is guaranteed
 	// that each request will be handled by their own Handler instance.
-	Init() Handler
+	//
+	// The given request can be used by the initializer to decide what type
+	// of Handler to initialize. For example one could implement a common
+	// version-specific handler initializer that would, based on the value
+	// of the Accept header, choose which version of the handler to initialize.
+	//
+	//	type VersionHandlerInitializer struct {
+	//		V0 HandlerInitializer
+	//		V1 HandlerInitializer
+	//		V2 HandlerInitializer
+	//	}
+	//
+	//	func (v VersionHandlerInitializer) Init(r *http.Request) Handler {
+	//		switch r.Header.Get("Accept") {
+	//		case "application/vnd.example.v1":
+	//			return v.V1.Init(r)
+	//		case "application/vnd.example.v2":
+	//			return v.V2.Init(r)
+	//		}
+	//		return v.V0.Init(r)
+	//      }
+	Init(r *http.Request) Handler
 }
 
 // Handler wraps a set of methods that are executed in sequence to handle an
@@ -54,7 +75,7 @@ type handlerExecer struct {
 // in the pre-defined order, if any of the methods return an error serve will exit
 // immediately and return that error, leaving the rest of the handler's methods untouched.
 func (x *handlerExecer) serve(w http.ResponseWriter, r *http.Request, c context.Context) error {
-	h := x.init.Init()
+	h := x.init.Init(r)
 	if err := h.AuthCheck(r, c); err != nil {
 		return err
 	}

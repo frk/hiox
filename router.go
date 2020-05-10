@@ -36,6 +36,11 @@ type RouteOptions struct {
 	ErrorHandler ErrorHandler
 	// The prefix to be applied to the routes' paths.
 	PathPrefix string
+
+	// TODO(mkopriva): to some benefit RouteOptions could probably provide
+	// a field to specify a list of middleware that could then be used to
+	// wrap around the http.Handlers (routeHandler/httpHandler) that are
+	// to be registered by the InitXxx functions.
 }
 
 // RouteList is a list of settings used to register HandlerInitializers for the specified paths.
