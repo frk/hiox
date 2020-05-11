@@ -27,10 +27,14 @@ type Action interface {
 	// is used as the final return value of the ExecuteAction function and this
 	// gives Done the ability to override the error returned from one of those
 	// preceding methods if need be.
+	//
+	// The IsDone value, when returned by any of the preceding methods,
+	// will NOT be passed into Done.
 	Done(in error) (out error)
 }
 
-// ExecuteAction executes the given Action returning the error that the Action's Done method returned, if any.
+// ExecuteAction executes the given Action returning the error that
+// the Action's Done method returned, if any.
 func ExecuteAction(a Action) error {
 	exec := func(a Action) error {
 		if err := a.BeforeValidate(); err != nil {
