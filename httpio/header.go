@@ -60,6 +60,27 @@ func (rr UserAgent) ReadHeader(header http.Header) error {
 	return nil
 }
 
+// IPUA can be used to read the IP address & User-Agent values from the header
+// of the incoming HTTP request and set them to the strings pointed to by IP & UA.
+type IPUA struct {
+	// Pointer to the strings which should be set to the ip & user agent.
+	IP, UA *string
+}
+
+// ReadHeader implements the HeaderReader interface.
+func (a IPUA) ReadHeader(header http.Header) error {
+	if ip := header.Get("X-Forwarded-For"); len(ip) > 0 {
+		*a.IP = ip
+	} else if ip := header.Get("X-Real-Ip"); len(ip) > 0 {
+		*a.IP = ip
+	}
+
+	if ua := header.Get("User-Agent"); len(ua) > 0 {
+		*a.UA = ua
+	}
+	return nil
+}
+
 var rxBearer = regexp.MustCompile(`(?i:bearer\s+)([0-9A-Za-z\-_]+)`)
 
 // BearerToken can be used to read the bearer token value from the Authorization
