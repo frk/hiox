@@ -9,8 +9,6 @@ individually, in combination are difficult to reason about. This can become incr
 more challenging as the complexity of an app's CRUD operations starts to rapidly grow
 in an attempt to meet the app's shape-shifting requirements.
 
-The approach taken by the package is unconventional and unoriginal. Unconventional,
-at least according to my interpretation, in that it ignores some of the common
-recommendations on how to write HTTP handlers in Go. Unoriginal, because it is,
-to a substantial degree, inspired by the design of the Cocoa's ViewController
-Life Cycle and, to a lesser degree, by ROR's before/after hooks.
+The package willfuly ignores some of the common recommendations on how to
+write HTTP handlers in Go and as such, it fails to be a good option for anyone
+who wants to follow those recommendations.
