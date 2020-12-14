@@ -1,3 +1,6 @@
+[`godoc`](http://godoc.org/github.com/frk/httpcrud)
+[`pkg.go.dev`](https://pkg.go.dev/github.com/frk/httpcrud)
+
 # httpcrud
 
 The `httpcrud` package defines a number of interfaces and types that provide
@@ -11,4 +14,4 @@ in an attempt to meet the app's shape-shifting requirements.
 
 The package willfuly ignores some of the common recommendations on how to
 write HTTP handlers in Go and as such, it fails to be a good option for anyone
-who wants to follow those recommendations.
+who wants to follow said recommendations.
